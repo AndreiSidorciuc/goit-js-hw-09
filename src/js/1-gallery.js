@@ -1,3 +1,6 @@
+import SimpleLightbox from 'simplelightbox';
+import 'simplelightbox/dist/simple-lightbox.min.css';
+
 const images = [
   {
     preview:
@@ -65,41 +68,31 @@ const images = [
 ];
 
 const gallery = document.querySelector('.gallery');
-gallery.insertAdjacentHTML('beforeend', createGallery(images));
-gallery.addEventListener('click', onGalleryClick);
+
+gallery.innerHTML = createGallery(images);
 
 function createGallery(arr) {
   return arr
     .map(
-      image => `
+      ({ preview, original, description }) => `
   <li class="gallery-item">
-    <a class="gallery-link" href="${image.original}">
+    <a class="gallery-link" href="${original}">
       <img
         class="gallery-image"
-        src="${image.preview}"
-        data-source="${image.original}"
-        alt="${image.description}" width="360" height="300"
-     />
+        src="${preview}"
+        alt="${description}"
+        width="360"
+        height="300"
+      />
     </a>
- </li>
+  </li>
   `
     )
     .join('');
 }
-
 ///////////////////////////////////////////////// обробка кліку та виведення могдалки......................................................
-function onGalleryClick(event) {
-  event.preventDefault();
 
-  if (!event.target.classList.contains('gallery-image')) {
-    return;
-  }
-
-  const largeImageURL = event.target.dataset.source;
-
-  const instance = basicLightbox.create(`
-    <img src="${largeImageURL}" />
-  `);
-
-  instance.show();
-}
+const lightbox = new SimpleLightbox('.gallery a', {
+  captionsData: 'alt',
+  captionDelay: 250,
+});
